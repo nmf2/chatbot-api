@@ -1,0 +1,273 @@
+---
+swagger: "2.0"
+info:
+  description: "This is the API for the Chatbot"
+  version: "1.0.0"
+  title: "Chatbot API"
+  contact:
+    email: "developer@example.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "virtserver.swaggerhub.com"
+basePath: "/nmf21/chatbotModel/1.0.0"
+tags:
+- name: "chatbot"
+  description: "Get information about the chatbot"
+- name: "answers"
+  description: "Ask the chatbot and get answers"
+- name: "training"
+  description: "Manage chatbot training data"
+- name: "train"
+  description: "Train the chatbot and get information about the last training"
+schemes:
+- "https"
+paths:
+  /:
+    get:
+      tags:
+      - "chatbot"
+      summary: "chatbot information"
+      operationId: "root_get"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Get information about the chatbot\n"
+          schema:
+            $ref: "#/definitions/Chatbot"
+      x-swagger-router-controller: "swagger_server.controllers.chatbot_controller"
+  /answers:
+    get:
+      tags:
+      - "answers"
+      summary: "Get answer from chatbot"
+      operationId: "answers_get"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "q"
+        in: "query"
+        description: "question to be answered"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "There is a answer for the question"
+          schema:
+            $ref: "#/definitions/Answer"
+        404:
+          description: "The chatbot didn't understand the question"
+      x-swagger-router-controller: "swagger_server.controllers.answers_controller"
+  /training:
+    get:
+      tags:
+      - "training"
+      summary: "Get training questions for each intent"
+      operationId: "training_get"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Found training questions"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/TrainingQuestions"
+        404:
+          description: "No training questions found"
+      x-swagger-router-controller: "swagger_server.controllers.training_controller"
+    post:
+      tags:
+      - "training"
+      summary: "Add intents with training questions"
+      operationId: "training_post"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Array of JSON Objects each with an intent and an array of questions"
+        required: true
+        schema:
+          type: "array"
+          items:
+            $ref: "#/definitions/TrainingQuestions"
+      responses:
+        200:
+          description: "Training data was successfully received"
+        409:
+          description: "Training data already exists"
+          examples:
+            application/json:
+              description: "This intent already has its training data. To add more\
+                \ data use PUT."
+              error: "data-conflict"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "swagger_server.controllers.training_controller"
+    put:
+      tags:
+      - "training"
+      summary: "Append or update training questions for each intent"
+      operationId: "training_put"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Array of JSON Objects each with an intent and an array of questions\n\
+          to substitute the present training data\n"
+        required: true
+        schema:
+          type: "array"
+          items:
+            $ref: "#/definitions/TrainingQuestions"
+      - name: "append"
+        in: "query"
+        description: "Defines if the incoming training data should replace or append\
+          \ the \noriginal data\n"
+        required: true
+        type: "boolean"
+      responses:
+        200:
+          description: "Training data was successfully received"
+        409:
+          description: "Training data already exists"
+          examples:
+            application/json:
+              description: "This intent already has its training data.\nTo add more\
+                \ data use PUT.\n"
+              error: "data-conflict"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "swagger_server.controllers.training_controller"
+  /train:
+    get:
+      tags:
+      - "train"
+      description: "Get information about the training"
+      operationId: "train_get"
+      parameters: []
+      responses:
+        200:
+          description: "Get information about the current tranning model"
+          schema:
+            $ref: "#/definitions/TrainInfo"
+      x-swagger-router-controller: "swagger_server.controllers.train_controller"
+    post:
+      tags:
+      - "train"
+      description: "Actually train the chatbot model on the server"
+      operationId: "train_post"
+      parameters: []
+      responses:
+        201:
+          description: "Training finished sucessfully"
+        404:
+          description: "No training data found"
+        500:
+          description: "Training failed in the server"
+      x-swagger-router-controller: "swagger_server.controllers.train_controller"
+definitions:
+  Answer:
+    type: "object"
+    required:
+    - "answer"
+    properties:
+      answer:
+        type: "string"
+        example: "The answer for the question is this."
+    example:
+      answer: "The answer for the question is this."
+  Chatbot:
+    type: "object"
+    required:
+    - "created"
+    - "id"
+    properties:
+      created:
+        type: "string"
+        format: "date-time"
+        example: "2017-07-21T17:32:28Z"
+      descrption:
+        type: "string"
+        example: "This chatbot does this and is owned by that."
+      id:
+        type: "string"
+        example: "chatbotName"
+    example:
+      created: "2017-07-21T17:32:28Z"
+      descrption: "This chatbot does this and is owned by that."
+      id: "chatbotName"
+  Error:
+    type: "object"
+    properties:
+      description:
+        type: "string"
+      error:
+        type: "string"
+  TrainingQuestions:
+    type: "object"
+    properties:
+      intent:
+        type: "string"
+      questions:
+        type: "array"
+        items:
+          type: "string"
+    example:
+      questions:
+      - "questions"
+      - "questions"
+      intent: "intent"
+  TrainInfo:
+    type: "object"
+    properties:
+      created:
+        type: "string"
+        format: "date-time"
+      trainingData:
+        type: "array"
+        items:
+          $ref: "#/definitions/TrainingQuestions"
+      finished:
+        type: "boolean"
+    example:
+      created: "2000-01-23T04:56:07.000+00:00"
+      trainingData:
+      - questions:
+        - "questions"
+        - "questions"
+        intent: "intent"
+      - questions:
+        - "questions"
+        - "questions"
+        intent: "intent"
+      finished: true
+x-components:
+  examples:
+    ArrayTrainingQuestionsEx:
+      summary: "Array of training data Example"
+      value:
+      - intent: "to_train"
+        questions:
+        - "First [ENTITY1 value1] question"
+        - "Second [ENTITY2 value2] question"
+      - intent: "another_intent"
+        questions:
+        - "Word [ENTITY1 value] word"
+        - "What/Where/How [ENTITY value] bla bla"
+    TrainingQuestionsEx:
+      summary: "Training data Example"
+      value:
+        intent: "to_train"
+        questions:
+        - "First [ENTITY1 value1] question"
+        - "Second [ENTITY2 value2] question"
