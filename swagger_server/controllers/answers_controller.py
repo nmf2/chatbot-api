@@ -1,8 +1,5 @@
-import connexion
-import six
-
 from swagger_server.models.answer import Answer  # noqa: E501
-from swagger_server import util
+from eva.response import Respondent
 
 
 def answers_get(q):  # noqa: E501
@@ -15,4 +12,4 @@ def answers_get(q):  # noqa: E501
 
     :rtype: Answer
     """
-    return 'do some magic!'
+    return Answer(Respondent.answer([q]))
