@@ -1,4 +1,4 @@
-from connexion import NoContent
+from swagger_server import util
 from swagger_server.models.train_info import TrainInfo
 
 from eva.config import BOT_PATH
@@ -6,11 +6,10 @@ from eva.entities.train import IOBTagger
 from eva.intents.train import IntentClassifier
 from datetime import datetime
 
-from pathlib import Path
-from os import path
 from glob import glob
 
 from collections import defaultdict
+from pathlib import Path
 
 import json
 
@@ -23,7 +22,17 @@ def train_get():
 
     :rtype: TrainInfo
     """
-    return 'do some magic!'
+    try:
+        build_file = _get_build_file()
+        info = defaultdict(str, json.load(build_file))
+        info['questions'] = util.get_training_questions()
+        build_file.close()
+    except(Exception):
+        raise
+        return "Server error", 500
+
+    return TrainInfo(**info), 200
+    # return 'OkaY', 200
 
 
 def train_post():  # noqa: E501
@@ -38,19 +47,33 @@ def train_post():  # noqa: E501
         return "No training data found", 404
 
     try:
-        info_file = open('info.json', 'a+')
-        info_file.seek(0)
-        info = defaultdict(str, json.load(info_file))
-        info_file.seek(0)
+        build_file = _get_build_file()
+        info = defaultdict(str, json.load(build_file))
         info['finished'] = False
 
-        tagger = IOBTagger()
-        tagger.train()
+        entity_trainer = IOBTagger()
+        entity_trainer.train()
+
+        intent_trainer = IntentClassifier()
+        intent_trainer.fit()  # train
+        intent_trainer.save('intent.model')
+
         info['finished'] = True
         info['created'] = datetime.now()
-        json.dump(info, info_file)
-        info_file.close()
+
+        build_file.seek(0)
+        json.dump(info, build_file)
+        build_file.close()
     except(Exception):
         return "Training failed in the server", 500
-    
+
     return "Training finished sucessfully", 200
+
+
+def _get_build_file(path=BOT_PATH+'/model/build.json', mode='a+'):
+    build_file = Path(path)
+    if not build_file.exists():
+        build_file.write_text("{ha}")
+    build_file = build_file.open(mode=mode)
+    build_file.seek(0)
+    return build_file

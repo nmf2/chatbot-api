@@ -1,5 +1,6 @@
 from swagger_server.models.answer import Answer  # noqa: E501
-from eva.response import Respondent
+from eva.responses import Respondent
+from eva.utils.parser import parse
 
 
 def answers_get(q):  # noqa: E501
@@ -12,4 +13,7 @@ def answers_get(q):  # noqa: E501
 
     :rtype: Answer
     """
-    return Answer(Respondent.answer([q]))
+    question = parse(q)
+    res = Respondent()
+    ans = res.answer(question)
+    return Answer(ans), 200

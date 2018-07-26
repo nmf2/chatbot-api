@@ -9,8 +9,9 @@ info:
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "virtserver.swaggerhub.com"
-basePath: "/nmf21/chatbotModel/1.0.0"
+# host: "virtserver.swaggerhub.com"
+# basePath: "/nmf21/chatbotModel/1.0.0"
+basePath: "/v1"
 tags:
 - name: "chatbot"
   description: "Get information about the chatbot"
@@ -20,8 +21,8 @@ tags:
   description: "Manage chatbot training data"
 - name: "train"
   description: "Train the chatbot and get information about the last training"
-schemes:
-- "https"
+# schemes:
+# - "http"
 paths:
   /:
     get:

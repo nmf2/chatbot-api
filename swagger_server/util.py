@@ -3,6 +3,11 @@ import datetime
 import six
 import typing
 
+from os import path
+from glob import glob
+
+from eva.config import BOT_PATH
+
 
 def _deserialize(data, klass):
     """Deserializes dict, list, str into an object.
@@ -15,7 +20,7 @@ def _deserialize(data, klass):
     if data is None:
         return None
 
-    if klass in six.integer_types or klass in (float, str, bool): 
+    if klass in six.integer_types or klass in (float, str, bool):
         return _deserialize_primitive(data, klass)
     elif klass == object:
         return _deserialize_object(data)
@@ -139,3 +144,16 @@ def _deserialize_dict(data, boxed_type):
     """
     return {k: _deserialize(v, boxed_type)
             for k, v in six.iteritems(data)}
+
+
+def get_trainning_questions():
+    from swagger_server.models.training_questions import TrainingQuestions
+    tqs = []
+    for file_path in glob('/'.join(BOT_PATH, 'data/iob', '*.iob')):
+        base = path.basename(file_path)
+        intent = path.splitext(base)[0]  # filename without extension
+        with open(file_path, 'r') as file:
+            questions = file.readlines()
+        tqs.append(TrainingQuestions(intent=intent, questions=questions))
+
+    return tqs

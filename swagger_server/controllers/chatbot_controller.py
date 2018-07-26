@@ -1,8 +1,6 @@
-import connexion
-import six
-
 from swagger_server.models.chatbot import Chatbot  # noqa: E501
-from swagger_server import util
+from eva.config import BOT_PATH
+import json
 
 
 def root_get():  # noqa: E501
@@ -13,4 +11,7 @@ def root_get():  # noqa: E501
 
     :rtype: Chatbot
     """
-    return 'do some magic!'
+    info = json.load(open(BOT_PATH+'/info.json'))
+    
+    # return Chatbot(**info), 200
+    return info, 200

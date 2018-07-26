@@ -1,13 +1,11 @@
 # import connexion
-
 from swagger_server.models.error import Error  # noqa: E501
-from swagger_server.models.training_questions import TrainingQuestions
+# from swagger_server.models.training_questions import TrainingQuestions
+from swagger_server import util
 
 from eva.config import BOT_PATH
 
 from pathlib import Path
-from os import path
-from glob import glob
 
 
 def training_get():  # noqa: E501
@@ -18,13 +16,7 @@ def training_get():  # noqa: E501
 
     :rtype: List[TrainingQuestions]
     """
-    tqs = []
-    for file_path in glob('/'.join(BOT_PATH, 'data/iob', '*.iob')):
-        base = path.basename(file_path)
-        intent = path.splitext(base)[0]  # filename without extension
-        with open(file_path, 'r') as file:
-            questions = file.readlines()
-        tqs.append(TrainingQuestions(intent=intent, questions=questions))
+    tqs = util.get_trainning_questions()
 
     if tqs == []:
         return "No training questions found", 404
@@ -32,7 +24,7 @@ def training_get():  # noqa: E501
     return tqs, 200
 
 
-def write_questions(body, mode):
+def _write_questions(body, mode):
     for tqs in body:
         filename = '/'.join(BOT_PATH, 'data/iob', tqs['intent'], '.iob')
         path = Path(filename)
@@ -60,7 +52,7 @@ def training_post(body):  # noqa: E501
     :rtype: None
     """
 
-    return write_questions(body, 'w+')
+    return _write_questions(body, 'w+')
 
 
 def training_put(body, append):  # noqa: E501
@@ -78,4 +70,4 @@ def training_put(body, append):  # noqa: E501
     :rtype: None
     """
 
-    return write_questions(body, 'a+')
+    return _write_questions(body, 'a+')
