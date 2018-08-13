@@ -13,7 +13,16 @@ def answers_get(q):  # noqa: E501
 
     :rtype: Answer
     """
-    question = parse(q)
-    res = Respondent()
-    ans = res.answer(question)
-    return Answer(ans), 200
+    
+    code = 404
+    response = None
+    try:
+        question = parse(q)
+        respondent = Respondent()
+        ans = respondent.answer(question)
+        response = Answer(ans)
+        code = 200
+    except(Exception):
+        pass
+
+    return response, code

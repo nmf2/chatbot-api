@@ -25,14 +25,13 @@ def train_get():
     try:
         build_file = _get_build_file()
         info = defaultdict(str, json.load(build_file))
-        info['questions'] = util.get_training_questions()
+        info['training_data'] = util.get_training_questions()
         build_file.close()
     except(Exception):
         raise
         return "Server error", 500
 
     return TrainInfo(**info), 200
-    # return 'OkaY', 200
 
 
 def train_post():  # noqa: E501
@@ -43,12 +42,11 @@ def train_post():  # noqa: E501
 
     :rtype: None
     """
-    if glob('/'.join(BOT_PATH, 'data/iob', '*.iob')) == []:
+    if glob('/'.join([BOT_PATH, 'data/iob', '*.iob'])) == []:
         return "No training data found", 404
 
     try:
-        build_file = _get_build_file()
-        info = defaultdict(str, json.load(build_file))
+        info = defaultdict(str)
         info['finished'] = False
 
         entity_trainer = IOBTagger()
@@ -59,21 +57,23 @@ def train_post():  # noqa: E501
         intent_trainer.save('intent.model')
 
         info['finished'] = True
-        info['created'] = datetime.now()
+        info['created'] = str(datetime.now())
 
-        build_file.seek(0)
+        build_file = _get_build_file(mode='w+')
         json.dump(info, build_file)
         build_file.close()
     except(Exception):
+        raise
         return "Training failed in the server", 500
 
     return "Training finished sucessfully", 200
 
 
-def _get_build_file(path=BOT_PATH+'/model/build.json', mode='a+'):
+def _get_build_file(path=BOT_PATH+'/models/build.json', mode='a+'):
     build_file = Path(path)
     if not build_file.exists():
-        build_file.write_text("{ha}")
+        build_file.touch()
+        build_file.write_text("{}")
     build_file = build_file.open(mode=mode)
     build_file.seek(0)
     return build_file
