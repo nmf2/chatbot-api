@@ -149,7 +149,7 @@ def _deserialize_dict(data, boxed_type):
 def get_trainning_questions():
     from chatbot_server.models.training_questions import TrainingQuestions
     tqs = []
-    for file_path in glob('/'.join(BOT_PATH, 'data/iob', '*.iob')):
+    for file_path in glob('/'.join([BOT_PATH, 'data/iob', '*.iob'])):
         base = path.basename(file_path)
         intent = path.splitext(base)[0]  # filename without extension
         with open(file_path, 'r') as file:

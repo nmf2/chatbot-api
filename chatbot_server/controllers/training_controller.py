@@ -2,9 +2,7 @@
 from chatbot_server.models.error import Error  # noqa: E501
 # from chatbot_server.models.training_questions import TrainingQuestions
 from chatbot_server import util
-
 from eva.config import BOT_PATH
-
 from pathlib import Path
 
 
@@ -18,24 +16,40 @@ def training_get():  # noqa: E501
     """
     tqs = util.get_trainning_questions()
 
-    if tqs == []:
-        return "No training questions found", 404
+    if tqs != []:
+        code = 200
+        response = tqs
+    else:
+        code = 404
+        response = None
 
-    return tqs, 200
+    return response, code
 
 
 def _write_questions(body, mode):
-    for tqs in body:
-        filename = '/'.join(BOT_PATH, 'data/iob', tqs['intent'], '.iob')
-        path = Path(filename)
+    """Write or append questions to disk
+    Returns status and HTTP code.
+    :rtype: String, Int
+    """
+    try:
+        if body == []:
+            raise KeyError
+        for tqs in body:
+            filename = '/'.join(BOT_PATH, 'data/iob', tqs['intent'], '.iob')
+            path = Path(filename)
 
-        if (path.exists()):
-            return Error(description="The intent {} already has it's training \
-            data. Use PUT to append or update.".format(tqs['intent']),
-                         error='data-confict'), 409
+            if path.exists() and mode != "a+":
+                return Error(description="The intent {} already has it's training \
+                data. Use PUT to append or update.".format(tqs['intent']),
+                             error='data-confict'), 409
 
-        with path.open(mode=mode) as file:
-            file.write('\n'.join(tqs['questions']))
+            with path.open(mode=mode) as file:
+                file.write('\n'.join(tqs['questions']))
+    except(KeyError):
+        return Error(description="Laking 'intent' key.", error='bad-json'), 400
+    except():
+        return Error(description="Unknown error.Contact admin.",
+                     error='unknown'), 500
 
     return "Training data was successfully received", 200
 
