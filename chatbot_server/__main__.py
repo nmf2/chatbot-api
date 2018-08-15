@@ -3,6 +3,7 @@
 import connexion
 
 from chatbot_server import encoder
+from waitress import serve
 
 import logging
 
@@ -13,7 +14,8 @@ def main():
     app.app.json_encoder = encoder.JSONEncoder
     # app.add_api('swagger.yaml', arguments={'title': 'Chatbot API'})
     app.add_api('swagger.yaml')
-    app.run(port=8080, debug=True)
+    # app.run(port=8080, debug=True)
+    serve(app)
 
 
 if __name__ == '__main__':
