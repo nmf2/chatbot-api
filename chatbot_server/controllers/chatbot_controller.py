@@ -1,4 +1,4 @@
-from swagger_server.models.chatbot import Chatbot  # noqa: E501
+from chatbot_server.models.chatbot import Chatbot  # noqa: E501
 from eva.config import BOT_PATH
 import json
 

@@ -2,7 +2,7 @@
 
 import connexion
 
-from swagger_server import encoder
+from chatbot_server import encoder
 
 import logging
 

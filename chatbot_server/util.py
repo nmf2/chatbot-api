@@ -147,7 +147,7 @@ def _deserialize_dict(data, boxed_type):
 
 
 def get_trainning_questions():
-    from swagger_server.models.training_questions import TrainingQuestions
+    from chatbot_server.models.training_questions import TrainingQuestions
     tqs = []
     for file_path in glob('/'.join(BOT_PATH, 'data/iob', '*.iob')):
         base = path.basename(file_path)

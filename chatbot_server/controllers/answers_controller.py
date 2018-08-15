@@ -1,4 +1,4 @@
-from swagger_server.models.answer import Answer  # noqa: E501
+from chatbot_server.models.answer import Answer  # noqa: E501
 from eva.responses import Respondent
 from eva.utils.parser import parse
 

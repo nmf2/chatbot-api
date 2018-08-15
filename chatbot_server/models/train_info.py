@@ -5,9 +5,9 @@ from datetime import date, datetime  # noqa: F401
 
 from typing import List, Dict  # noqa: F401
 
-from swagger_server.models.base_model_ import Model
-from swagger_server.models.training_questions import TrainingQuestions  # noqa: F401,E501
-from swagger_server import util
+from chatbot_server.models.base_model_ import Model
+from chatbot_server.models.training_questions import TrainingQuestions  # noqa: F401,E501
+from chatbot_server import util
 
 
 class TrainInfo(Model):

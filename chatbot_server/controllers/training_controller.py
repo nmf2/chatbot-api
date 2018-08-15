@@ -1,7 +1,7 @@
 # import connexion
-from swagger_server.models.error import Error  # noqa: E501
-# from swagger_server.models.training_questions import TrainingQuestions
-from swagger_server import util
+from chatbot_server.models.error import Error  # noqa: E501
+# from chatbot_server.models.training_questions import TrainingQuestions
+from chatbot_server import util
 
 from eva.config import BOT_PATH
 

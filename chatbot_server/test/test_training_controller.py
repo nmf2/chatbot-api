@@ -5,9 +5,9 @@ from __future__ import absolute_import
 from flask import json
 from six import BytesIO
 
-from swagger_server.models.error import Error  # noqa: E501
-from swagger_server.models.training_questions import TrainingQuestions  # noqa: E501
-from swagger_server.test import BaseTestCase
+from chatbot_server.models.error import Error  # noqa: E501
+from chatbot_server.models.training_questions import TrainingQuestions  # noqa: E501
+from chatbot_server.test import BaseTestCase
 
 
 class TestTrainingController(BaseTestCase):

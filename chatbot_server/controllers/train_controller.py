@@ -1,5 +1,5 @@
-from swagger_server import util
-from swagger_server.models.train_info import TrainInfo
+from chatbot_server import util
+from chatbot_server.models.train_info import TrainInfo
 
 from eva.config import BOT_PATH
 from eva.entities.train import IOBTagger
