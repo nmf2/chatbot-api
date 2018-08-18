@@ -15,30 +15,30 @@ class Chatbot(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, created: datetime=None, descrption: str=None, id: str=None):  # noqa: E501
+    def __init__(self, created: datetime=None, description: str=None, id: str=None):  # noqa: E501
         """Chatbot - a model defined in Swagger
 
         :param created: The created of this Chatbot.  # noqa: E501
         :type created: datetime
-        :param descrption: The descrption of this Chatbot.  # noqa: E501
-        :type descrption: str
+        :param description: The description of this Chatbot.  # noqa: E501
+        :type description: str
         :param id: The id of this Chatbot.  # noqa: E501
         :type id: str
         """
         self.swagger_types = {
             'created': datetime,
-            'descrption': str,
+            'description': str,
             'id': str
         }
 
         self.attribute_map = {
             'created': 'created',
-            'descrption': 'descrption',
+            'description': 'description',
             'id': 'id'
         }
 
         self._created = created
-        self._descrption = descrption
+        self._description = description
         self._id = id
 
     @classmethod
@@ -76,25 +76,25 @@ class Chatbot(Model):
         self._created = created
 
     @property
-    def descrption(self) -> str:
-        """Gets the descrption of this Chatbot.
+    def description(self) -> str:
+        """Gets the description of this Chatbot.
 
 
-        :return: The descrption of this Chatbot.
+        :return: The description of this Chatbot.
         :rtype: str
         """
-        return self._descrption
+        return self._description
 
-    @descrption.setter
-    def descrption(self, descrption: str):
-        """Sets the descrption of this Chatbot.
+    @description.setter
+    def description(self, description: str):
+        """Sets the description of this Chatbot.
 
 
-        :param descrption: The descrption of this Chatbot.
-        :type descrption: str
+        :param description: The description of this Chatbot.
+        :type description: str
         """
 
-        self._descrption = descrption
+        self._description = description
 
     @property
     def id(self) -> str:

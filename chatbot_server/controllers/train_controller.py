@@ -25,10 +25,9 @@ def train_get():
     try:
         build_file = _get_build_file()
         info = defaultdict(str, json.load(build_file))
-        info['training_data'] = util.get_training_questions()
+        info['training_data'] = util.get_trainning_questions()
         build_file.close()
     except(Exception):
-        raise
         return "Server error", 500
 
     return TrainInfo(**info), 200
