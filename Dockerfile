@@ -1,15 +1,21 @@
 FROM nmf2/eva:latest
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+RUN mkdir -p /tmp
 
-COPY requirements.txt /usr/src/app/
+# mv nltk data to eva's
+RUN mkdir /elasticsearch /root/.bot/
 
-RUN pip3 install --no-cache-dir -r requirements.txt
+COPY requirements.txt /tmp
 
-COPY . /usr/src/app
+RUN cd /tmp \
+    && pip3 install --no-cache-dir -r requirements.txt
 
-RUN python3 setup.py install
+COPY . /tmp/
+
+RUN cd /tmp \
+    && python3 setup.py install
+
+RUN rm -rf /tmp
 
 EXPOSE 8080
 
