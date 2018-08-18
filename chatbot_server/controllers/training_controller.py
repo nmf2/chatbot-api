@@ -35,7 +35,7 @@ def _write_questions(body, mode):
         if body == []:
             raise KeyError
         for tqs in body:
-            filename = '/'.join(BOT_PATH, 'data/iob', tqs['intent'], '.iob')
+            filename = '/'.join((BOT_PATH, 'data/iob', tqs['intent'])) + '.iob'
             path = Path(filename)
 
             if path.exists() and mode != "a+":

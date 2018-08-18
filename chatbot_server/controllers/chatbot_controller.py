@@ -15,8 +15,11 @@ def root_get():  # noqa: E501
         info = json.load(open(BOT_PATH+'/info.json'))
         res = Chatbot(**info)
         code = 200
-    except(Exception):
+    except(FileNotFoundError):
         res = "No information file"
+        code = 500
+    except(Exception):
+        res = "Unknown error. Contact developer."
         code = 500
     
     return res, code
